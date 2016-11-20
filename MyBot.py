@@ -1,15 +1,32 @@
 from hlt import *
 from networking import *
+from UntidyLogicHaha import UntidyLogicHaha
 
 myID, gameMap = getInit()
-sendInit("MyPythonBot")
+sendInit("BIGBALLERSHOTCALLERHAHA")
+bot = UntidyLogicHaha(myID, gameMap)
 
 while True:
-    moves = []
-    gameMap = getFrame()
-    for y in range(gameMap.height):
-        for x in range(gameMap.width):
-            location = Location(x, y)
-            if gameMap.getSite(location).owner == myID:
-                moves.append(Move(location, random.choice(DIRECTIONS)))
-    sendFrame(moves)
+	#numberOfSquares = len(myShit)
+	moves = []
+	gameMap = getFrame()
+	myShit = bot.myShit(gameMap)
+	productionRate=0
+	
+	if myShit < 10:
+		productionRate = 3
+	elif myShit < 30:
+		productionRate = 5
+	else:
+		productionRate = 7
+		
+	for y in range(gameMap.height):
+		for x in range(gameMap.width):
+			location = Location(x, y)
+			if gameMap.getSite(location).owner == myID:
+				if gameMap.getSite(location).strength<gameMap.getSite(location).production*productionRate:
+					moves.append(Move(location, STILL))				
+				else:
+					direction = bot.getClosestFreeEdge(location, gameMap)
+					moves.append(Move(location, direction))
+	sendFrame(moves)
