@@ -6,7 +6,7 @@ class EdgeWeight:
 		self.loc = loc
 		self.weight = weight
 
-class UntidyLogicHaha(object):
+class UntidyLogicHaha2(object):
 
 	def __init__(self, myID, gameMap):
 		self.myID = myID
