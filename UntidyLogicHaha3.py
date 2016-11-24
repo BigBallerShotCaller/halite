@@ -6,8 +6,7 @@ class EdgeWeight:
 		self.loc = loc
 		self.weight = weight
 
-
-class UntidyLogicHaha(object):
+class UntidyLogicHaha3(object):
 
 	def __init__(self, myID, gameMap):
 		self.myID = myID
@@ -46,7 +45,7 @@ class UntidyLogicHaha(object):
 	def canTake(self, gameMap, myLocation, prospectiveLocation):
 		return (gameMap.getSite(myLocation).strength > prospectiveLocation.strength)
 				
-	def getClosestFreeEdge(self, location, gameMap, reachedProductionRate):
+	def getClosestFreeEdge(self, location, gameMap):
 		gm = gameMap
 		x = location.x
 		y = location.y
@@ -83,58 +82,62 @@ class UntidyLogicHaha(object):
 				return NORTH
 			#else:
 			#	return STILL
-		elif reachedProductionRate == False:
-			return STILL
 		
 		while (xDistance < (self.gameMap.width)) and (xFound < 2):
 			xDistance += 1
-			currentEastLocation = gm.getSite(self.getNextXLocation(xDistance, location))
-			currentWestLocation = gm.getSite(self.getNextXLocation(-xDistance, location))
+			eastLocation = self.getNextXLocation(xDistance, location)
+			westLocation = self.getNextXLocation(-xDistance, location)
 			
-			if currentEastLocation.owner != self.myID:
+			if gm.getSite(eastLocation).owner != self.myID:
 				edgeWeights
 				xDirection = EAST
-				eWeight=currentEastLocation.strength / (currentEastLocation.production+1) + xDistance*20
+				eWeight=gm.getSite(eastLocation).strength / (gm.getSite(eastLocation).production+1) + xDistance*20
 				xFound += 1
-			elif currentWestLocation.owner != self.myID:
+			elif gm.getSite(westLocation).owner != self.myID:
 				xDirection = WEST
-				wWeight=currentWestLocation.strength / (currentWestLocation.production+1) + xDistance*20
+				wWeight=gm.getSite(westLocation).strength / (gm.getSite(westLocation).production+1) + xDistance*20
 				xFound += 1
 		while (yDistance < (self.gameMap.height)) and (yFound < 2):
 			yDistance += 1
-			currentNorthLocation = gm.getSite(self.getNextYLocation(yDistance, location))
-			currentSouthLocation = gm.getSite(self.getNextYLocation(-yDistance, location))
-			if currentNorthLocation.owner != self.myID:
+			northLocation = self.getNextYLocation(yDistance, location)
+			southLocation = self.getNextYLocation(-yDistance, location)
+			if gm.getSite(northLocation).owner != self.myID:
 				yDirection = SOUTH
-				sWeight=currentNorthLocation.strength / (currentNorthLocation.production+1) + yDistance*20
+				sWeight=gm.getSite(northLocation).strength / (gm.getSite(northLocation).production+1) + yDistance*20
 				yFound += 1
-			elif currentSouthLocation.owner != self.myID:
+			elif gm.getSite(southLocation).owner != self.myID:
 				yDirection = NORTH
-				nWeight=currentSouthLocation.strength / (currentSouthLocation.production+1) + yDistance*20
+				nWeight=gm.getSite(southLocation).strength / (gm.getSite(southLocation).production+1) + yDistance*20
 				yFound += 1
 				
+		xDistance = 1
+		yDistance = 1
+		eastLocation = self.getNextXLocation(xDistance, location)
+		westLocation = self.getNextXLocation(-xDistance, location)
+		northLocation = self.getNextYLocation(yDistance, location)
+		southLocation = self.getNextYLocation(-yDistance, location)
 				
 		if (eWeight <= wWeight) and (eWeight<= sWeight) and (eWeight <= nWeight):
-			if gm.getSite(eastLocation).owner != 0:
+			if gm.getSite(eastLocation).owner == self.myID:
 				return EAST
 			elif self.canTake(gameMap, location, gm.getSite(eastLocation)) == False:
 				return STILL
 		elif (wWeight <= nWeight) and (wWeight<= sWeight):
-			if gm.getSite(westLocation).owner != 0:
+			if gm.getSite(westLocation).owner == self.myID:
 				return WEST
 			elif self.canTake(gameMap, location, gm.getSite(westLocation)) == False:
 				return STILL
 		elif (nWeight <= sWeight):
-			if gm.getSite(southLocation).owner != 0:
+			if gm.getSite(southLocation).owner == self.myID:
 				return NORTH
 			elif self.canTake(gameMap, location, gm.getSite(southLocation)) == False:
 				return STILL
 		else:
-			if gm.getSite(northLocation).owner != 0:
+			if gm.getSite(northLocation).owner == self.myID:
 				return SOUTH
 			elif self.canTake(gameMap, location, gm.getSite(northLocation)) == False:
 				return STILL
-		return STILL
+			
 			
 	def getDirections(self, gameMap):
 		directions = []

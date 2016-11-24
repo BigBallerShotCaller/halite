@@ -11,7 +11,14 @@ while True:
 	moves = []
 	gameMap = getFrame()
 	myShit = bot.myShit(gameMap)
-	productionRate = 4
+	productionRate=0
+	
+	if myShit < 10:
+		productionRate = 8
+	elif myShit < 30:
+		productionRate = 6
+	else:
+		productionRate = 4
 		
 	for y in range(gameMap.height):
 		for x in range(gameMap.width):

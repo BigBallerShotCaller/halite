@@ -69,23 +69,23 @@ class UntidyLogicHaha2(object):
 		if gm.getSite(eastLocation).owner != self.myID:
 			if self.canTake(gameMap, location, gm.getSite(eastLocation)):
 				return EAST
-			#else:
-			#	return STILL
+			else:
+				return STILL
 		elif gm.getSite(westLocation).owner != self.myID:
 			if self.canTake(gameMap, location, gm.getSite(westLocation)):
 				return WEST
-			#else:
-			#	return STILL
+			else:
+				return STILL
 		elif gm.getSite(northLocation).owner != self.myID:
 			if self.canTake(gameMap, location, gm.getSite(northLocation)):
 				return SOUTH
-			#else:
-			#	return STILL
+			else:
+				return STILL
 		elif gm.getSite(southLocation).owner != self.myID:
 			if self.canTake(gameMap, location, gm.getSite(southLocation)):
 				return NORTH
-			#else:
-			#	return STILL
+			else:
+				return STILL
 		
 		while (xDistance < (self.gameMap.width)) and (xFound < 2):
 			xDistance += 1

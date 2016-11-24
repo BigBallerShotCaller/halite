@@ -1,11 +1,11 @@
 from hlt import *
 from networking import *
-from UntidyLogicHaha import UntidyLogicHaha
+from UntidyLogicHaha3 import UntidyLogicHaha3
 import timeit
 
 myID, gameMap = getInit()
-sendInit("BIGBALLERSHOTCALLERHAHA")
-bot = UntidyLogicHaha(myID, gameMap)
+sendInit("Old Bot")
+bot = UntidyLogicHaha3(myID, gameMap)
 
 while True:
 	start_time = timeit.default_timer()
@@ -16,7 +16,6 @@ while True:
 	#myShit = bot.myShit(gameMap)
 	productionRate = 5
 	goQuick=False #if time is nearly up	
-	numSquares = 0
 	
 	for y in range(gameMap.height):
 		for x in range(gameMap.width):
@@ -25,16 +24,12 @@ while True:
 					goQuick=True
 			location = Location(x, y)
 			if goQuick != True:
-				site = gameMap.getSite(location)
-				if site.owner == myID:
-					numSquares+=1
-					if numSquares > (3*gameMap.height*gameMap.width)/4 and numSquares > 2000:
-						productionRate = numSquares/10
+				if gameMap.getSite(location).owner == myID:
+					if gameMap.getSite(location).strength<gameMap.getSite(location).production*productionRate:
+						moves.append(Move(location, STILL))				
 					else:
-						productionRate = 5
-					reachedProductionRate = site.strength>=site.production*productionRate
-					direction = bot.getClosestFreeEdge(location, gameMap, reachedProductionRate)
-					moves.append(Move(location, direction))
+						direction = bot.getClosestFreeEdge(location, gameMap)
+						moves.append(Move(location, direction))
 			else: #times up lets make everything stay still
 				moves.append(Move(location, STILL))
 				
