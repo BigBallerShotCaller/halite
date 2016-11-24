@@ -7,7 +7,7 @@ class EdgeWeight:
 		self.weight = weight
 
 
-class UntidyLogicHaha(object):
+class UntidyLogicHaha4(object):
 
 	def __init__(self, myID, gameMap):
 		self.myID = myID
@@ -67,51 +67,26 @@ class UntidyLogicHaha(object):
 		northLocation = self.getNextYLocation(yDistance, location)
 		southLocation = self.getNextYLocation(-yDistance, location)
 		
-		numberEdges = sum([gm.getSite(eastLocation).owner != self.myID, gm.getSite(westLocation).owner != self.myID, gm.getSite(northLocation).owner != self.myID, gm.getSite(southLocation).owner != self.myID])
-		if (gm.getSite(eastLocation).owner != self.myID and gm.getSite(eastLocation).owner != 0):
+		if gm.getSite(eastLocation).owner != self.myID and self.canTake(gameMap, location, gm.getSite(eastLocation)):
 				return EAST
 			#else:
 			#	return STILL
-		elif (gm.getSite(westLocation).owner != self.myID and gm.getSite(westLocation).owner != 0):
+		elif gm.getSite(westLocation).owner != self.myID and self.canTake(gameMap, location, gm.getSite(westLocation)):
 				return WEST
 			#else:
 			#	return STILL
-		elif (gm.getSite(northLocation).owner != self.myID and gm.getSite(northLocation).owner != 0):
+		elif gm.getSite(northLocation).owner != self.myID and self.canTake(gameMap, location, gm.getSite(northLocation)):
 				return SOUTH
 			#else:
 			#	return STILL
-		elif (gm.getSite(southLocation).owner != self.myID and gm.getSite(southLocation).owner != 0):
-				return NORTH
-
-				
-		if (gm.getSite(eastLocation).owner != self.myID and self.canTake(gameMap, location, gm.getSite(eastLocation))):
-				return EAST
-			#else:
-			#	return STILL
-		elif (gm.getSite(westLocation).owner != self.myID and self.canTake(gameMap, location, gm.getSite(westLocation))):
-				return WEST
-			#else:
-			#	return STILL
-		elif (gm.getSite(northLocation).owner != self.myID and self.canTake(gameMap, location, gm.getSite(northLocation))):
-				return SOUTH
-			#else:
-			#	return STILL
-		elif (gm.getSite(southLocation).owner != self.myID and self.canTake(gameMap, location, gm.getSite(southLocation))):
+		elif gm.getSite(southLocation).owner != self.myID and self.canTake(gameMap, location, gm.getSite(southLocation)):
 				return NORTH
 			#else:
 			#	return STILL
 		elif reachedProductionRate == False:
 			return STILL
-		elif (gm.getSite(eastLocation).owner == self.myID and gameMap.getSite(location).strength < gm.getSite(eastLocation).strength) and numberEdges == 0:
-			return EAST
-		elif (gm.getSite(westLocation).owner == self.myID and gameMap.getSite(location).strength < gm.getSite(eastLocation).strength) and numberEdges == 0:
-			return WEST
-		elif (gm.getSite(northLocation).owner == self.myID and gameMap.getSite(location).strength < gm.getSite(northLocation).strength) and numberEdges == 0:
-			return SOUTH
-		elif (gm.getSite(southLocation).owner == self.myID and gameMap.getSite(location).strength < gm.getSite(southLocation).strength) and numberEdges == 0:
-			return NORTH
 		
-		while (xDistance < 3) and (xFound < 2):
+		while (xDistance < (self.gameMap.width)) and (xFound < 2):
 			xDistance += 1
 			currentEastLocation = gm.getSite(self.getNextXLocation(xDistance, location))
 			currentWestLocation = gm.getSite(self.getNextXLocation(-xDistance, location))
@@ -125,10 +100,7 @@ class UntidyLogicHaha(object):
 				xDirection = WEST
 				wWeight=currentWestLocation.strength / (currentWestLocation.production+1) + xDistance*20
 				xFound += 1
-			elif sWeight > 100000 and nWeight > 100000:
-				eWeight += currentEastLocation.strength
-				wWeight += currentWestLocation.strength
-		while (yDistance < 3) and (yFound < 2):
+		while (yDistance < (self.gameMap.height)) and (yFound < 2):
 			yDistance += 1
 			currentNorthLocation = gm.getSite(self.getNextYLocation(yDistance, location))
 			currentSouthLocation = gm.getSite(self.getNextYLocation(-yDistance, location))
@@ -140,9 +112,6 @@ class UntidyLogicHaha(object):
 				yDirection = NORTH
 				nWeight=currentSouthLocation.strength / (currentSouthLocation.production+1) + yDistance*20
 				yFound += 1
-			elif sWeight > 100000 and nWeight > 100000:
-				sWeight += currentNorthLocation.strength
-				nWeight += currentSouthLocation.strength
 				
 				
 		if (eWeight <= wWeight) and (eWeight<= sWeight) and (eWeight <= nWeight):
