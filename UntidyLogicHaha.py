@@ -43,7 +43,7 @@ class UntidyLogicHaha(object):
 		return Location(location.x, newY)
 		
 	def canTake(self, gameMap, myLocation, prospectiveLocation):
-		return (gameMap.getSite(myLocation).strength > prospectiveLocation.strength)
+		return (gameMap.getSite(myLocation).strength > gameMap.getSite(prospectiveLocation).strength)
 				
 	def getClosestFreeEdge(self, location, gameMap):
 		gm = gameMap
@@ -56,64 +56,98 @@ class UntidyLogicHaha(object):
 		xDirection = STILL
 		yDirection = STILL
 		edgeWeights = []
-		eWeight = 500000
-		wWeight = 500000
-		nWeight = 500000
-		sWeight = 500000
+		eWeight = 0
+		wWeight = 0
+		nWeight = 0
+		sWeight = 0
+		
+		eFound = False
+		wFound = False
+		nFound = False
+		sFound = False
+		
+		distanceWeight = 500
 		
 		eastLocation = self.getNextXLocation(xDistance, location)
 		westLocation = self.getNextXLocation(-xDistance, location)
-		northLocation = self.getNextYLocation(yDistance, location)
-		southLocation = self.getNextYLocation(-yDistance, location)
+		southLocation = self.getNextYLocation(yDistance, location)
+		northLocation = self.getNextYLocation(-yDistance, location)
 		
-		if gm.getSite(eastLocation).owner != self.myID:
-			if self.canTake(gameMap, location, gm.getSite(eastLocation)):
+		
+		if gm.getSite(eastLocation).owner != self.myID and self.canTake(gameMap, location, eastLocation):
 				return EAST
-			#else:
-			#	return STILL
-		elif gm.getSite(westLocation).owner != self.myID:
-			if self.canTake(gameMap, location, gm.getSite(westLocation)):
+		elif gm.getSite(westLocation).owner != self.myID and self.canTake(gameMap, location, westLocation):
 				return WEST
-			#else:
-			#	return STILL
-		elif gm.getSite(northLocation).owner != self.myID:
-			if self.canTake(gameMap, location, gm.getSite(northLocation)):
+		elif gm.getSite(southLocation).owner != self.myID and self.canTake(gameMap, location, southLocation):
 				return SOUTH
-			#else:
-			#	return STILL
-		elif gm.getSite(southLocation).owner != self.myID:
-			if self.canTake(gameMap, location, gm.getSite(southLocation)):
-				return NORTH
-			#else:
-			#	return STILL
-		
-		while (xDistance < (self.gameMap.width)) and (xFound < 2):
-			xDistance += 1
-			eastLocation = self.getNextXLocation(xDistance, location)
-			westLocation = self.getNextXLocation(-xDistance, location)
-			
-			if gm.getSite(eastLocation).owner != self.myID:
-				edgeWeights
-				xDirection = EAST
-				eWeight=gm.getSite(eastLocation).strength + xDistance*20
-				xFound += 1
-			elif gm.getSite(westLocation).owner != self.myID:
-				xDirection = WEST
-				wWeight=gm.getSite(westLocation).strength + xDistance*20
-				xFound += 1
-		while (yDistance < (self.gameMap.height)) and (yFound < 2):
-			yDistance += 1
-			northLocation = self.getNextYLocation(yDistance, location)
-			southLocation = self.getNextYLocation(-yDistance, location)
-			if gm.getSite(northLocation).owner != self.myID:
-				yDirection = SOUTH
-				sWeight=gm.getSite(northLocation).strength + yDistance*20
-				yFound += 1
-			elif gm.getSite(southLocation).owner != self.myID:
-				yDirection = NORTH
-				nWeight=gm.getSite(southLocation).strength + yDistance*20
-				yFound += 1
+		elif gm.getSite(northLocation).owner != self.myID and self.canTake(gameMap, location, northLocation):
+				return NORTH			
 				
+		if sum([gm.getSite(eastLocation).owner != self.myID, gm.getSite(westLocation).owner != self.myID, gm.getSite(southLocation).owner != self.myID, gm.getSite(northLocation).owner != self.myID]) >= 3:
+			return STILL
+		
+		eDistance = 0
+		while True:
+			eastLocation = self.getNextXLocation(eDistance, location)
+			eWeight+=gm.getSite(eastLocation).strength #+ eDistance*distanceWeight
+			if eDistance > (self.gameMap.width):
+				eWeight = 5000000
+				break
+			elif gm.getSite(self.getNextXLocation(eDistance, location)).owner == self.myID:
+				break
+			eDistance += 1
+			
+		wDistance = 0
+		while True:
+			westLocation = self.getNextXLocation(-wDistance, location)
+			wWeight+=gm.getSite(westLocation).strength #+ wDistance*distanceWeight
+			if wDistance > (self.gameMap.width):
+				wWeight = 5000000
+				break
+			elif gm.getSite(self.getNextXLocation(-wDistance, location)).owner == self.myID:
+				break
+			wDistance += 1
+				
+		if eDistance < wDistance:
+			xDirection = EAST
+			xWeight = eWeight
+		else:
+			xDirection = WEST
+			xWeight = wWeight
+
+		sDistance = 0
+		while gm.getSite(self.getNextYLocation(sDistance, location)).owner == self.myID:	
+			southLocation = self.getNextYLocation(sDistance, location)
+			sWeight+=gm.getSite(southLocation).strength #+ sDistance*distanceWeight
+			#if sDistance > (self.gameMap.height):
+			#	sWeight = 5000000
+			#	break
+			sDistance += 1
+
+		nDistance = -1
+		while gm.getSite(self.getNextYLocation(-nDistance, location)).owner == self.myID:
+			nDistance += 1 
+			northLocation = self.getNextYLocation(-nDistance, location)
+			nWeight+=gm.getSite(northLocation).strength
+			#+ nDistance*distanceWeight
+			#if nDistance > (self.gameMap.height):
+			#	nWeight = 5000000
+			#	break
+				
+		# if sWeight < nWeight:
+			# yDirection = SOUTH
+			# yWeight = sWeight
+		# elif nWeight < sWeight:
+			# yDirection = NORTH
+			# yWeight = nWeight
+		# else:
+			# return STILL
+			
+		# if xWeight < yWeight:
+			# return xDirection
+		# elif yWeight < xWeight:
+			# return yDirection
+			
 		if (eWeight <= wWeight) and (eWeight<= sWeight) and (eWeight <= nWeight):
 			return EAST
 		elif (wWeight <= nWeight) and (wWeight<= sWeight):
@@ -122,6 +156,9 @@ class UntidyLogicHaha(object):
 			return NORTH
 		else:
 			return SOUTH
+			
+			
+		return STILL
 			
 	def getDirections(self, gameMap):
 		directions = []

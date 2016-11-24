@@ -1,24 +1,17 @@
 from hlt import *
 from networking import *
-from UntidyLogicHaha import UntidyLogicHaha
+from UntidyLogicHaha2 import UntidyLogicHaha2
 
 myID, gameMap = getInit()
 sendInit("OldBot")
-bot = UntidyLogicHaha(myID, gameMap)
+bot = UntidyLogicHaha2(myID, gameMap)
 
 while True:
 	#numberOfSquares = len(myShit)
 	moves = []
 	gameMap = getFrame()
 	myShit = bot.myShit(gameMap)
-	productionRate=0
-	
-	if myShit < 10:
-		productionRate = 8
-	elif myShit < 30:
-		productionRate = 6
-	else:
-		productionRate = 4
+	productionRate = 4
 		
 	for y in range(gameMap.height):
 		for x in range(gameMap.width):

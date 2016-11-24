@@ -1,11 +1,11 @@
 from hlt import *
 from networking import *
-from UntidyLogicHaha2 import UntidyLogicHaha2
+from UntidyLogicHaha import UntidyLogicHaha
 import timeit
 
 myID, gameMap = getInit()
 sendInit("BIGBALLERSHOTCALLERHAHA")
-bot = UntidyLogicHaha2(myID, gameMap)
+bot = UntidyLogicHaha(myID, gameMap)
 
 while True:
 	start_time = timeit.default_timer()
@@ -14,12 +14,12 @@ while True:
 	moves = []
 	gameMap = getFrame()
 	myShit = bot.myShit(gameMap)
-	productionRate = 5
+	productionRate = 4
 	goQuick=False #if time is nearly up	
 	
 	for y in range(gameMap.height):
 		for x in range(gameMap.width):
-			if (x + y) % 30 == 0:
+			if (x + y) % 80 == 0:
 				if timeit.default_timer() - start_time > maxTime:
 					goQuick=True
 			location = Location(x, y)
